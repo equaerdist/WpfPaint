@@ -17,15 +17,15 @@ namespace WpfPaint
     /// </summary>
     public partial class App : Application
     {
-        private IHost? _host;
-        public IHost HostInstance
+        private static IHost? _host;
+        public static IHost HostInstance
         {
             get
             {
                 return _host ??= CreateHost();
             }
         }
-        private IHost CreateHost()
+        private static IHost CreateHost()
         {
             return Host.CreateDefaultBuilder(Environment.GetCommandLineArgs())
                 .UseContentRoot(Environment.CurrentDirectory)
