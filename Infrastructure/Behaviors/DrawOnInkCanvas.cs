@@ -113,7 +113,7 @@ namespace WpfPaint.Infrastructure.Behaviors
                 drawInfo = DrawTriangle(current);
             if (Figure == Figure.Line)
                 drawInfo = DrawLine(current);
-            var behavior = new ShapeEditBehavior() { Location = drawInfo.Location };
+            var behavior = new ShapeEditBehavior();
             Interaction.GetBehaviors(drawInfo?.Shape).Add(behavior);
         }
         private DrawInfo DrawEllipse(Point current)
