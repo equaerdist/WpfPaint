@@ -129,6 +129,17 @@ namespace WpfPaint.Infrastructure.Behaviors
         }
         private void ConfigurePosition(Shape shape, Point current)
         {
+
+            var area = CalculateArea(current);
+            shape.Width = area.size.X;
+            shape.Height = area.size.Y;
+         
+            
+            shape.SetValue(Canvas.LeftProperty, area.position.X);
+            shape.SetValue(Canvas.TopProperty, area.position.Y);
+        }
+        private (Point size, Point position) CalculateArea(Point current)
+        {
             var diff = current - _start;
             var width = Math.Abs(diff.X);
             var height = Math.Abs(diff.Y);
@@ -136,16 +147,13 @@ namespace WpfPaint.Infrastructure.Behaviors
                 width -= width / 10;
             if (diff.Y > 0)
                 height -= height / 10;
-            shape.Width = width;
-            shape.Height = height;
             var x = Math.Min(_start.X, current.X);
             var y = Math.Min(_start.Y, current.Y);
             if (diff.X < 0)
                 x += x / 10;
             if (diff.Y < 0)
                 y += y / 10;
-            shape.SetValue(Canvas.LeftProperty, x);
-            shape.SetValue(Canvas.TopProperty, y);
+            return (new(width, height), new(x, y));
         }
 
 
