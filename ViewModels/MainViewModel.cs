@@ -3,6 +3,16 @@ using System.Windows.Media;
 using System.Linq;
 using WpfPaint.Models;
 using System.Collections.ObjectModel;
+using System.Windows.Input;
+using WpfPaint.Services.UserDialogs;
+using System.Windows.Controls;
+using System;
+using System.IO;
+using System.Windows.Media.Imaging;
+using WpfPaint.Services.FileHandler;
+using System.Threading.Tasks;
+using WpfPaint.Infrastructure.Commands;
+using static System.Net.WebRequestMethods;
 
 namespace WpfPaint.ViewModels
 {
@@ -24,6 +34,10 @@ namespace WpfPaint.ViewModels
 			get { return _brushSize; }
 			set => Set(ref _brushSize, value);
 		}
+
+        private readonly IUserDialogs _dialogs;
+        private readonly IFileHandler _fileHandler;
+
         public IEnumerable<int> BrushSizes { get; }
         #endregion
         #region фигура
@@ -35,6 +49,7 @@ namespace WpfPaint.ViewModels
 		}
 		public ObservableCollection<Figure> Figures { get; set; }
         #endregion
+        #region заливка
         private bool _fill;
 
 		public bool Fill
@@ -42,8 +57,45 @@ namespace WpfPaint.ViewModels
 			get { return _fill; }
 			set => Set(ref _fill, value);
 		}
-		public MainViewModel()
+        #endregion
+		public ICommand SaveFileCommand { get; }
+		private async void OnSaveFileExecuted(object? p)
 		{
+			if (p is not Canvas) throw new ArgumentException();
+			var canvas = (Canvas)p;
+            string fileName = string.Empty;
+			if (!_dialogs.AskForFile(out fileName,  "PNG Files (*.png)|*.png", true, "png"))
+				return;
+
+            var renderTargetBitmap = new RenderTargetBitmap((int)canvas.ActualWidth, 
+				(int)canvas.ActualHeight, 
+				96, 96, 
+				PixelFormats.Pbgra32);
+         
+            renderTargetBitmap.Render(canvas);
+
+            var encoder = new PngBitmapEncoder();
+            encoder.Frames.Add(BitmapFrame.Create(renderTargetBitmap));
+			await _fileHandler.HandleFileAsync(async () =>
+			{
+				await SaveFileFromPng(encoder, fileName);
+			});
+			
+        }
+		private bool CanSaveFileExecuted(object? p) => p is Canvas;
+		private async Task SaveFileFromPng(PngBitmapEncoder encoder, string fileName)
+		{
+            using (var fileStream = new FileStream(fileName, FileMode.Create))
+            {
+                encoder.Save(fileStream);
+				await fileStream.FlushAsync();
+            }
+		}
+        public MainViewModel(IUserDialogs dialogs, IFileHandler fileHandler)
+		{
+			SaveFileCommand = new RelayCommand(OnSaveFileExecuted, CanSaveFileExecuted);
+			_dialogs = dialogs;
+			_fileHandler = fileHandler;
 			BrushSizes = Enumerable.Range(2, 15);
 			Colors = new ObservableCollection<Color>() 
 			{

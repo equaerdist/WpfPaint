@@ -58,6 +58,11 @@
                                       Triangle="{StaticResource Triangle}"></selectors:FigureSelector>
         </Grid.Resources>
         <DockPanel Margin="10">
+            <Menu DockPanel.Dock="Top">
+                <MenuItem Header="Фаил">
+                    <MenuItem Header="Сохранить как" Command="{Binding SaveFileCommand}" CommandParameter="{Binding ElementName=canvas}"></MenuItem>
+                </MenuItem>
+            </Menu>
             <Grid  DockPanel.Dock="Top">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"></ColumnDefinition>
@@ -106,8 +111,8 @@
                    
                 </GroupBox>
             </Grid>
-            <Grid DockPanel.Dock="Top" Margin="0,10,0,10">
-                <Canvas Background="{StaticResource help_color}">
+            <Grid  Margin="0,10,0,10">
+                <Canvas Background="{StaticResource help_color}" x:Name="canvas">
                     <bh:Interaction.Behaviors>
                         <mybh:DrawOnInkCanvas Color="{Binding Color}" 
                                               BrushSize="{Binding BrushSize}" 

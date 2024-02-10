@@ -18,8 +18,4 @@
     </None>
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Services\UserDialogs\" />
-  </ItemGroup>
-
 </Project>

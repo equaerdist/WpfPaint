@@ -9,6 +9,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using WpfPaint.Infrastructure.Behaviors;
+using WpfPaint.Services.FileHandler;
+using WpfPaint.Services.UserDialogs;
 using WpfPaint.ViewModels;
 
 namespace WpfPaint
@@ -38,6 +40,8 @@ namespace WpfPaint
                 {
                     services.AddSingleton<MainViewModel>();
                     services.AddSingleton<DrawOnInkCanvas>();
+                    services.AddSingleton<IUserDialogs, UserDialogs>();
+                    services.AddSingleton<IFileHandler, FileHandler>();
                 })
                 .Build();
         }
