@@ -60,7 +60,12 @@
         <DockPanel Margin="10">
             <Menu DockPanel.Dock="Top">
                 <MenuItem Header="Фаил">
-                    <MenuItem Header="Сохранить как" Command="{Binding SaveFileCommand}" CommandParameter="{Binding ElementName=canvas}"></MenuItem>
+                    <MenuItem Header="Сохранить как" 
+                              Command="{Binding SaveFileCommand}" 
+                              CommandParameter="{Binding ElementName=canvas}"></MenuItem>
+                    <MenuItem Header="Открыть"
+                              Command="{Binding OpenImageCommand}"
+                              CommandParameter="{Binding ElementName=canvas}"></MenuItem>
                 </MenuItem>
             </Menu>
             <Grid  DockPanel.Dock="Top">

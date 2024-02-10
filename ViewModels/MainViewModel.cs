@@ -13,13 +13,15 @@ using WpfPaint.Services.FileHandler;
 using System.Threading.Tasks;
 using WpfPaint.Infrastructure.Commands;
 using static System.Net.WebRequestMethods;
+using System.Windows;
 
 namespace WpfPaint.ViewModels
 {
     class MainViewModel : BaseViewModel
     {
-		#region Цвет
-		private Color _color;
+		private string _openFilter = "Все поддерживаемые форматы|*.png;*.jpg;*.jpeg;*.bmp;*.gif|PNG Files (*.png)|*.png|JPEG Files (*.jpg;*.jpeg)|*.jpg;*.jpeg|Bitmap Files (*.bmp)|*.bmp|GIF Files (*.gif)|*.gif";
+        #region Цвет
+        private Color _color;
 		public ObservableCollection<Color> Colors { get; set; }
 		public Color Color
 		{
@@ -58,7 +60,8 @@ namespace WpfPaint.ViewModels
 			set => Set(ref _fill, value);
 		}
         #endregion
-		public ICommand SaveFileCommand { get; }
+        #region команда сохранения рисунка
+        public ICommand SaveFileCommand { get; }
 		private async void OnSaveFileExecuted(object? p)
 		{
 			if (p is not Canvas) throw new ArgumentException();
@@ -91,8 +94,36 @@ namespace WpfPaint.ViewModels
 				await fileStream.FlushAsync();
             }
 		}
+        #endregion
+		public ICommand OpenImageCommand { get; }
+		private void OnOpenImageExecuted(object? p)
+		{
+			if (!(p is Canvas))
+				return;
+			var canvas = (Canvas)p;
+			string fileName = string.Empty;
+			if (!_dialogs.AskForFile(out fileName, _openFilter, false))
+				return;
+            try
+            {
+                Image image = new Image();
+
+                BitmapImage bitmap = new BitmapImage();
+                bitmap.BeginInit();
+                bitmap.UriSource = new Uri(fileName, UriKind.RelativeOrAbsolute);
+                bitmap.EndInit();
+                image.Source = bitmap;
+                canvas.Children.Add(image);
+            }
+            catch (Exception ex)
+            {
+				_dialogs.ShowError($"Ошибка загрузки изображения: {ex.Message}");
+            }
+        }
+		private bool CanOpenImageExecuted(object? p) => p is Canvas canvas;
         public MainViewModel(IUserDialogs dialogs, IFileHandler fileHandler)
 		{
+			OpenImageCommand = new RelayCommand(OnOpenImageExecuted, CanOpenImageExecuted);
 			SaveFileCommand = new RelayCommand(OnSaveFileExecuted, CanSaveFileExecuted);
 			_dialogs = dialogs;
 			_fileHandler = fileHandler;

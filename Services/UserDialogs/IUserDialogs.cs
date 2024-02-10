@@ -8,7 +8,7 @@ namespace WpfPaint.Services.UserDialogs
 {
     interface IUserDialogs
     {
-        bool AskForFile(out string filename, string filter, string? defaultExtension = null);
+        bool AskForFile(out string filename, string filter, bool isSaving, string? defaultExtension = null);
         bool Confirm(string message);
         void ShowError(string message);
         void ShowInfo(string message);
