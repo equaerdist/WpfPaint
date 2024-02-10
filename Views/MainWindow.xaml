@@ -6,77 +6,115 @@
         xmlns:local="clr-namespace:WpfPaint"
         xmlns:bh="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:mybh="clr-namespace:WpfPaint.Infrastructure.Behaviors"
+        xmlns:sys="clr-namespace:System.Windows.Media;assembly=WindowsBase"
         mc:Ignorable="d"
+        xmlns:selectors="clr-namespace:WpfPaint.Infrastructure.TemplateSelectors.FigureSelector"
+        xmlns:conv="clr-namespace:WpfPaint.Infrastructure.Converters"
         DataContext="{Binding Source={StaticResource Locator}, Path=MainViewModel}"
         Title="MainWindow" Height="450" Width="800">
     <Grid Background="{StaticResource secondary_color}">
+        <Grid.Resources>
+            <conv:ColorToBrush x:Key="color_to_brush"></conv:ColorToBrush>
+            <DataTemplate x:Key="Triangle">
+                <Viewbox Grid.Row="0" Grid.Column="0" Width="25" Height="25" Margin="4">
+                    <Canvas Width="45" Height="45">
+                        <Path Data="M0,0 L40,0 L22.5,45 Z" Fill="{StaticResource main_color}" StrokeThickness="1"/>
+                    </Canvas>
+                </Viewbox>
+            </DataTemplate>
+            <DataTemplate x:Key="Square">
+                <Viewbox Grid.Row="0" Grid.Column="1" Width="25" Height="25" Margin="4">
+                    <Canvas Width="45" Height="45">
+                        <Path Data="M0,0 L45,0 L45,45 L0, 45 Z" Fill="{StaticResource main_color}" StrokeThickness="1"/>
+                    </Canvas>
+                </Viewbox>
+            </DataTemplate>
+            <DataTemplate x:Key="Circle">
+                <Viewbox Grid.Row="1" Grid.Column="1" Width="25" Height="25" Margin="4">
+                    <Canvas Width="45" Height="45">
+                        <Ellipse Width="45" Height="45" Fill="{StaticResource main_color}"></Ellipse>
+                    </Canvas>
+                </Viewbox>
+            </DataTemplate>
+            <DataTemplate x:Key="Line">
+                <Viewbox Grid.Row="1" Grid.Column="0" Width="25" Height="25" Margin="4">
+                    <Canvas Width="45" Height="45">
+                        <Path Data="M0,0 L45,45" StrokeThickness="10" Stroke="{StaticResource main_color}"/>
+                    </Canvas>
+                </Viewbox>
+            </DataTemplate>
+            <DataTemplate x:Key="None">
+                <Viewbox Grid.Row="0" Grid.Column="2" Width="25" Height="25" Margin="4">
+                    <Canvas Width="45" Height="45">
+                        <Ellipse Width="22.5" Height="22.5" Fill="{StaticResource main_color}" VerticalAlignment="Center" HorizontalAlignment="Center" Canvas.Left="11.25" Canvas.Top="11.25"></Ellipse>
+                    </Canvas>
+                </Viewbox>
+            </DataTemplate>
+            <selectors:FigureSelector Square="{StaticResource Square}"
+                                      Circle="{StaticResource Circle}"
+                                      Line="{StaticResource Line}"
+                                      None="{StaticResource None}"
+                                      x:Key="figure_selector"
+                                      Triangle="{StaticResource Triangle}"></selectors:FigureSelector>
+        </Grid.Resources>
         <DockPanel Margin="10">
-            <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
-                <GroupBox Header="Цвета">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"></ColumnDefinition>
-                            <ColumnDefinition Width="*"></ColumnDefinition>
-                            <ColumnDefinition Width="*"></ColumnDefinition>
-                            <ColumnDefinition Width="*"></ColumnDefinition>
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="*"></RowDefinition>
-                            <RowDefinition Height="*"></RowDefinition>
-                        </Grid.RowDefinitions>
-                        <Rectangle Width="20" Height="20" Fill="Red" Grid.Column="0" Grid.Row="0" Margin="2"></Rectangle>
-                        <Rectangle Width="20" Height="20" Fill="Blue" Grid.Column="0" Grid.Row="1" Margin="2"></Rectangle>
-                        <Rectangle Width="20" Height="20" Fill="Green" Grid.Column="1" Grid.Row="0" Margin="2"></Rectangle>
-                        <Rectangle Width="20" Height="20" Fill="Yellow" Grid.Column="1" Grid.Row="1" Margin="2"></Rectangle>
-                        <Rectangle Width="20" Height="20" Fill="Gray" Grid.Column="2" Grid.Row="0" Margin="2"></Rectangle>
-                        <Rectangle Width="20" Height="20" Fill="Azure" Grid.Column="2" Grid.Row="1" Margin="2"></Rectangle>
-                    </Grid>
+            <Grid  DockPanel.Dock="Top">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <GroupBox Header="Цвета" Grid.Column="0">
+                    <ListView ItemsSource="{Binding Colors}"
+                              SelectedItem="{Binding Color}"
+                              ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate DataType="{x:Type Color}">
+                                <Rectangle Fill="{Binding Converter={StaticResource color_to_brush}, Mode=OneWay}"  Width="25" Height="25" Margin="5"></Rectangle>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                        <ListView.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel></WrapPanel>
+                            </ItemsPanelTemplate>
+                        </ListView.ItemsPanel>
+                    </ListView>
                 </GroupBox>
-                <GroupBox Header="Фигуры" Margin="10,0,10,0">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"></ColumnDefinition>
-                            <ColumnDefinition Width="Auto"></ColumnDefinition>
-                            <ColumnDefinition Width="Auto"></ColumnDefinition>
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"></RowDefinition>
-                            <RowDefinition Height="Auto"></RowDefinition>
-                        </Grid.RowDefinitions>
-                        <Viewbox Grid.Row="0" Grid.Column="0" Width="20" Height="20" Margin="4">
-                            <Canvas Width="45" Height="45">
-                                <Path Data="M0,0 L40,0 L22.5,45 Z" Fill="{StaticResource main_color}" StrokeThickness="1"/>
-                            </Canvas>
-                        </Viewbox>
-                        <Viewbox Grid.Row="0" Grid.Column="1" Width="20" Height="20" Margin="4">
-                            <Canvas Width="45" Height="45">
-                                <Path Data="M0,0 L45,0 L45,45 L0, 45 Z" Fill="{StaticResource main_color}" StrokeThickness="1"/>
-                            </Canvas>
-                        </Viewbox>
-                        <Viewbox Grid.Row="1" Grid.Column="1" Width="20" Height="20" Margin="4">
-                            <Canvas Width="45" Height="45">
-                                <Ellipse Width="45" Height="45" Fill="{StaticResource main_color}"></Ellipse>
-                            </Canvas>
-                        </Viewbox>
-                        <Viewbox Grid.Row="1" Grid.Column="0" Width="20" Height="20" Margin="4">
-                            <Canvas Width="45" Height="45">
-                                <Path Data="M0,0 L45,45" StrokeThickness="10" Stroke="{StaticResource main_color}"/>
-                            </Canvas>
-                        </Viewbox>
-                        <Viewbox Grid.Row="0" Grid.Column="2" Width="20" Height="20" Margin="4">
-                            <Canvas Width="45" Height="45">
-                                <Ellipse Width="22.5" Height="22.5" Fill="{StaticResource main_color}" VerticalAlignment="Center" HorizontalAlignment="Center" Canvas.Left="11.25" Canvas.Top="11.25"></Ellipse>
-                            </Canvas>
-                        </Viewbox>
-                    </Grid>
+                <GroupBox Header="Фигуры" Margin="10,0,10,0" Grid.Column="1">
+                    <ListView ItemsSource="{Binding Figures}"
+                              SelectedItem="{Binding Figure}"
+                              ItemTemplateSelector="{StaticResource figure_selector}"
+                              ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                        <ListView.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel></WrapPanel>
+                            </ItemsPanelTemplate>
+                        </ListView.ItemsPanel>
+                    </ListView>
                 </GroupBox>
-            </StackPanel>
+                <GroupBox Header="Параметры" Grid.Column="2">
+                    <DockPanel Margin="2">
+                        <ComboBox ItemsSource="{Binding BrushSizes}" 
+                                  SelectedItem="{Binding BrushSize}"
+                                  DockPanel.Dock="Top" 
+                                  Height="25"></ComboBox>
+                        <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                            <TextBlock Foreground="{StaticResource text_color}" VerticalAlignment="Center">Заливка</TextBlock>
+                            <CheckBox IsChecked="{Binding Fill}" VerticalAlignment="Center" Margin="10,0,0,0"></CheckBox>
+                        </StackPanel>
+                    </DockPanel>
+                   
+                </GroupBox>
+            </Grid>
             <Grid DockPanel.Dock="Top" Margin="0,10,0,10">
-                <InkCanvas>
+                <Canvas Background="{StaticResource help_color}">
                     <bh:Interaction.Behaviors>
-                        <mybh:DrawOnInkCanvas Color="{Binding Color}" BrushSize="{Binding BrushSize}" IsFill="{Binding Fill}"></mybh:DrawOnInkCanvas>
+                        <mybh:DrawOnInkCanvas Color="{Binding Color}" 
+                                              BrushSize="{Binding BrushSize}" 
+                                              IsFill="{Binding Fill}"
+                                              Figure="{Binding Figure}"></mybh:DrawOnInkCanvas>
                     </bh:Interaction.Behaviors>
-                </InkCanvas>
+                </Canvas>
             </Grid>
         </DockPanel>
 
