@@ -73,6 +73,8 @@ namespace WpfPaint.Infrastructure.Behaviors
         }
         private void OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
+            if (e.Source != AssociatedObject)
+                return;
             _start = e.GetPosition(_canvas);
             if (_canvas is null)
                 throw new ArgumentNullException(nameof(_canvas));
@@ -88,6 +90,7 @@ namespace WpfPaint.Infrastructure.Behaviors
 
         private void OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
+           
             if (_canvas is null)
                 throw new ArgumentNullException(nameof(_canvas));
             _canvas.MouseMove -= OnMouseMove;
@@ -101,17 +104,25 @@ namespace WpfPaint.Infrastructure.Behaviors
                 throw new ArgumentNullException(nameof(_canvas));
             var diffCount = _canvas.Children.Count - _storage.Count;
             _canvas.Children.RemoveRange(_canvas.Children.Count - diffCount, diffCount);
+            DrawInfo drawInfo = new((new(0,0), new(0,0)), new Rectangle());
             if(Figure == Figure.Square)
-                DrawRectangle(current);
+                drawInfo = DrawRectangle(current);
             if (Figure == Figure.Circle)
-                DrawEllipse(current);
+                drawInfo = DrawEllipse(current);
+            if (Figure == Figure.Triangle)
+                drawInfo = DrawTriangle(current);
+            if (Figure == Figure.Line)
+                drawInfo = DrawLine(current);
+            var behavior = new ShapeEditBehavior() { Location = drawInfo.Location };
+            Interaction.GetBehaviors(drawInfo?.Shape).Add(behavior);
         }
-        private void DrawEllipse(Point current)
+        private DrawInfo DrawEllipse(Point current)
         {
             Ellipse shape = new();
             ConfigureShape((Shape)shape);
-            ConfigurePosition(shape, current);
+            var area = ConfigurePosition(shape, current);
             _canvas?.Children.Add(shape);
+            return new(area, shape);
         }
         private void ConfigureShape(Shape shape)
         {
@@ -120,35 +131,92 @@ namespace WpfPaint.Infrastructure.Behaviors
             if (IsFill)
                 shape.Fill = new SolidColorBrush(Color);
         }
-        private void DrawRectangle(Point current)
+        private DrawInfo DrawRectangle(Point current)
         {
             Rectangle rect = new();
             ConfigureShape((Shape)rect);
-            ConfigurePosition(rect, current);
+            var location = ConfigurePosition(rect, current);
             _canvas?.Children.Add(rect);
+            return new(location,rect);
         }
-        private void ConfigurePosition(Shape shape, Point current)
+        private DrawInfo DrawTriangle(Point current)
+        {
+            var area = CalculateArea(current);
+            Path shape = new Path();
+            ConfigureShape((Shape)shape);
+            shape.Data = CreateTriangle(area.size);
+            area.size = MakeSizeAbsolute(area.size);
+            shape.SetValue(Canvas.LeftProperty, area.position.X);
+            shape.SetValue(Canvas.TopProperty, area.position.Y);
+            _canvas?.Children.Add(shape);
+            area.position = GetStartPoint(_start, current);
+            return new(area, shape);
+        }
+        private DrawInfo DrawLine(Point current)
+        {
+            Path shape = new();
+            ConfigureShape(shape);
+            var area = CalculateArea(current);
+            shape.Data = CreateLine(area.size);
+            shape.SetValue(Canvas.LeftProperty, area.position.X);
+            shape.SetValue(Canvas.TopProperty, area.position.Y);
+            _canvas?.Children.Add(shape);
+            area.size = MakeSizeAbsolute(area.size);
+            area.position = GetStartPoint(_start, current);
+            return new (area, shape);
+        }
+
+        private Geometry CreateLine(Point size)
+        {
+            var geometry = new PathGeometry();
+            var figure = new PathFigure();
+            figure.StartPoint = new(0, 0);
+            var line = new LineSegment(size, true);
+            figure.Segments.Add(line);
+            geometry.Figures.Add(figure);
+            return geometry;
+        }
+
+        private PathGeometry CreateTriangle(Point sizes)
+        {
+            var geometry = new PathGeometry();
+            var figure = new PathFigure();
+            figure.StartPoint = new Point(0, 0);
+            var line1 = new LineSegment(new(sizes.X, 0), true);
+            var line2 = new LineSegment(new(sizes.X / 2, sizes.Y), true);
+            figure.Segments.Add(line1);
+            figure.Segments.Add(line2);
+            figure.IsClosed = true;
+            geometry.Figures.Add(figure);
+            return geometry;
+        }
+        private (Point,Point) ConfigurePosition(Shape shape, Point current)
         {
 
             var area = CalculateArea(current);
+            area.size = MakeSizeAbsolute(area.size);
+            area.position = GetStartPoint(_start, current);
             shape.Width = area.size.X;
             shape.Height = area.size.Y;
-         
+            
             
             shape.SetValue(Canvas.LeftProperty, area.position.X);
             shape.SetValue(Canvas.TopProperty, area.position.Y);
+            return area;
         }
+        private Point MakeSizeAbsolute(Point size) => new (Math.Abs(size.X), Math.Abs(size.Y));
+        private Point GetStartPoint(Point start, Point current) => new(Math.Min(start.X, current.X), Math.Min(start.Y, current.Y));
         private (Point size, Point position) CalculateArea(Point current)
         {
             var diff = current - _start;
-            var width = Math.Abs(diff.X);
-            var height = Math.Abs(diff.Y);
+            var width = diff.X;
+            var height = diff.Y;
             if (diff.X > 0)
                 width -= width / 10;
             if (diff.Y > 0)
                 height -= height / 10;
-            var x = Math.Min(_start.X, current.X);
-            var y = Math.Min(_start.Y, current.Y);
+            var x = _start.X;
+            var y = _start.Y;
             if (diff.X < 0)
                 x += x / 10;
             if (diff.Y < 0)

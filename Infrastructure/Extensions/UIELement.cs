@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Markup;
+using System.Windows.Media;
 
 namespace WpfPaint.Infrastructure.Extensions
 {
@@ -19,6 +20,17 @@ namespace WpfPaint.Infrastructure.Extensions
                 ms.Seek(0, SeekOrigin.Begin);
                 return (T)XamlReader.Load(ms);
             }
+        }
+        public static T? FindVisualParent<T>(this UIElement element) where T : DependencyObject
+        {
+            DependencyObject parent = VisualTreeHelper.GetParent(element);
+
+            while (parent != null && !(parent is T))
+            {
+                parent = VisualTreeHelper.GetParent(parent);
+            }
+
+            return (T?)parent;
         }
     }
 }

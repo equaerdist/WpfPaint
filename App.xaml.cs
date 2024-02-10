@@ -8,6 +8,7 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using WpfPaint.Infrastructure.Behaviors;
 using WpfPaint.ViewModels;
 
 namespace WpfPaint
@@ -36,6 +37,7 @@ namespace WpfPaint
                 .ConfigureServices((context, services) =>
                 {
                     services.AddSingleton<MainViewModel>();
+                    services.AddSingleton<DrawOnInkCanvas>();
                 })
                 .Build();
         }
