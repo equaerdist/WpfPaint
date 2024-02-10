@@ -103,11 +103,15 @@ namespace WpfPaint.Infrastructure.Behaviors
             _canvas.Children.RemoveRange(_canvas.Children.Count - diffCount, diffCount);
             if(Figure == Figure.Square)
                 DrawRectangle(current);
+            if (Figure == Figure.Circle)
+                DrawEllipse(current);
         }
-        private void DrawEllipse()
+        private void DrawEllipse(Point current)
         {
             Ellipse shape = new();
             ConfigureShape((Shape)shape);
+            ConfigurePosition(shape, current);
+            _canvas?.Children.Add(shape);
         }
         private void ConfigureShape(Shape shape)
         {
@@ -120,6 +124,11 @@ namespace WpfPaint.Infrastructure.Behaviors
         {
             Rectangle rect = new();
             ConfigureShape((Shape)rect);
+            ConfigurePosition(rect, current);
+            _canvas?.Children.Add(rect);
+        }
+        private void ConfigurePosition(Shape shape, Point current)
+        {
             var diff = current - _start;
             var width = Math.Abs(diff.X);
             var height = Math.Abs(diff.Y);
@@ -127,17 +136,16 @@ namespace WpfPaint.Infrastructure.Behaviors
                 width -= width / 10;
             if (diff.Y > 0)
                 height -= height / 10;
-            rect.Width = width;
-            rect.Height = height;
+            shape.Width = width;
+            shape.Height = height;
             var x = Math.Min(_start.X, current.X);
             var y = Math.Min(_start.Y, current.Y);
             if (diff.X < 0)
                 x += x / 10;
-            if(diff.Y < 0)
+            if (diff.Y < 0)
                 y += y / 10;
-            rect.SetValue(Canvas.LeftProperty, x);
-            rect.SetValue(Canvas.TopProperty, y);
-            _canvas?.Children.Add(rect);
+            shape.SetValue(Canvas.LeftProperty, x);
+            shape.SetValue(Canvas.TopProperty, y);
         }
 
 
