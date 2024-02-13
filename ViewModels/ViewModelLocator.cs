@@ -11,6 +11,9 @@ namespace WpfPaint.ViewModels
 {
     class ViewModelLocator
     {
-        public static MainViewModel MainViewModel => App.HostInstance.Services.GetRequiredService<MainViewModel>(); 
+        public static MainViewModel MainViewModel 
+            => App.HostInstance.Services.GetRequiredService<MainViewModel>();
+        public static ColorPickerViewModel ColorPickerViewModel
+            => App.HostInstance.Services.GetRequiredService<ColorPickerViewModel>();
     }
 }

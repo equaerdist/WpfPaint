@@ -42,6 +42,7 @@ namespace WpfPaint
                     services.AddSingleton<DrawOnInkCanvas>();
                     services.AddSingleton<IUserDialogs, UserDialogs>();
                     services.AddSingleton<IFileHandler, FileHandler>();
+                    services.AddSingleton<ColorPickerViewModel>();
                 })
                 .Build();
         }

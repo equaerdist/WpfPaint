@@ -6,6 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Media;
+using WpfPaint.ViewModels;
+using WpfPaint.Views;
 
 namespace WpfPaint.Services.UserDialogs
 {
@@ -59,8 +62,16 @@ namespace WpfPaint.Services.UserDialogs
 
         public void ShowInfo(string message)
             => MessageBox.Show(message, _caption, MessageBoxButton.OK, MessageBoxImage.Information);
-        public void ShowColorPickerDialog()
+        public bool ShowColorPickerDialog(out Color selectedColor)
         {
+            var picker = new ColorPicker();
+            if(picker.ShowDialog() == true)
+            {
+                var viewModel = (ColorPickerViewModel)picker.DataContext;
+                selectedColor = viewModel.CurrentColor;
+                return true;
+            }
+            return false;
         }
     }
 }

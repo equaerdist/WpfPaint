@@ -9,12 +9,11 @@
         xmlns:sys="clr-namespace:System.Windows.Media;assembly=WindowsBase"
         mc:Ignorable="d"
         xmlns:selectors="clr-namespace:WpfPaint.Infrastructure.TemplateSelectors.FigureSelector"
-        xmlns:conv="clr-namespace:WpfPaint.Infrastructure.Converters"
         DataContext="{Binding Source={StaticResource Locator}, Path=MainViewModel}"
         Title="MainWindow" Height="450" Width="800">
     <Grid Background="{StaticResource secondary_color}">
         <Grid.Resources>
-            <conv:ColorToBrush x:Key="color_to_brush"></conv:ColorToBrush>
+           
             <DataTemplate x:Key="Triangle">
                 <Viewbox Grid.Row="0" Grid.Column="0" Width="25" Height="25" Margin="4">
                     <Canvas Width="45" Height="45">
@@ -75,20 +74,34 @@
                     <ColumnDefinition Width="*"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
                 <GroupBox Header="Цвета" Grid.Column="0">
-                    <ListView ItemsSource="{Binding Colors}"
+                    <DockPanel>
+                        <ListView ItemsSource="{Binding Colors}"
                               SelectedItem="{Binding Color}"
+                                  DockPanel.Dock="Left"
                               ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate DataType="{x:Type Color}">
-                                <Rectangle Fill="{Binding Converter={StaticResource color_to_brush}, Mode=OneWay}"  Width="25" Height="25" Margin="5"></Rectangle>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                        <ListView.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <WrapPanel></WrapPanel>
-                            </ItemsPanelTemplate>
-                        </ListView.ItemsPanel>
-                    </ListView>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate DataType="{x:Type Color}">
+                                    <Rectangle Fill="{Binding Converter={StaticResource color_to_brush}, Mode=OneWay}"  
+                                           Width="25" 
+                                           Height="25" 
+                                           Margin="5"></Rectangle>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                            <ListView.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel></WrapPanel>
+                                </ItemsPanelTemplate>
+                            </ListView.ItemsPanel>
+                        </ListView>
+                        <Grid Margin="10">
+                            <Rectangle Fill="{StaticResource main_color}" Width="25" Height="25" VerticalAlignment="Center"  HorizontalAlignment="Center">
+                                <Rectangle.InputBindings>
+                                    <MouseBinding MouseAction="LeftClick" Command="{Binding PickColorCommand}"></MouseBinding>
+                                </Rectangle.InputBindings>
+                            </Rectangle>
+                        </Grid>
+                       
+                    </DockPanel>
                 </GroupBox>
                 <GroupBox Header="Фигуры" Margin="10,0,10,0" Grid.Column="1">
                     <ListView ItemsSource="{Binding Figures}"

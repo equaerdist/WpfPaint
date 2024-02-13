@@ -27,7 +27,17 @@ namespace WpfPaint.ViewModels
 		public Color Color
 		{
 			get { return _color; }
-			set => Set(ref _color, value);
+			set 
+			{ 
+				if (Set(ref _color, value))
+				{
+					if(!Colors.Contains(value))
+					{
+						Colors.RemoveAt(Colors.Count - 1);
+						Colors.Add(value);
+					}
+				}
+			}
 		}
 		#endregion
 		#region Размер кистей
@@ -96,7 +106,8 @@ namespace WpfPaint.ViewModels
             }
 		}
         #endregion
-		public ICommand OpenImageCommand { get; }
+        #region команда загрузки рисунка
+        public ICommand OpenImageCommand { get; }
 		private void OnOpenImageExecuted(object? p)
 		{
 			if (!(p is Canvas))
@@ -124,8 +135,22 @@ namespace WpfPaint.ViewModels
             }
         }
 		private bool CanOpenImageExecuted(object? p) => p is Canvas canvas;
+        #endregion
+        #region команда выбора цвета
+		public ICommand PickColorCommand { get; set; }
+		private void OnPickColorExecuted(object? p)
+		{
+			Color selectedColor = Color;
+			if (!_dialogs.ShowColorPickerDialog(out selectedColor))
+				return;
+			Color = selectedColor;
+		}
+
+        private bool CanPickColorExecute(object? p) => true;
+        #endregion
         public MainViewModel(IUserDialogs dialogs, IFileHandler fileHandler)
 		{
+			PickColorCommand = new RelayCommand(OnPickColorExecuted, CanPickColorExecute);
 			OpenImageCommand = new RelayCommand(OnOpenImageExecuted, CanOpenImageExecuted);
 			SaveFileCommand = new RelayCommand(OnSaveFileExecuted, CanSaveFileExecuted);
 			_dialogs = dialogs;
