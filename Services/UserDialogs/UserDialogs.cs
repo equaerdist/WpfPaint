@@ -49,12 +49,18 @@ namespace WpfPaint.Services.UserDialogs
            
         }
 
-        public bool Confirm(string message) => MessageBox.Show(message, _caption, MessageBoxButton.OKCancel) == MessageBoxResult.OK;
+        public bool Confirm(string message) 
+            => MessageBox.Show(message, _caption, MessageBoxButton.OKCancel) == MessageBoxResult.OK;
         
 
-        public void ShowError(string message) => MessageBox.Show(message, _caption, MessageBoxButton.OK, MessageBoxImage.Error);
+        public void ShowError(string message) 
+            => MessageBox.Show(message, _caption, MessageBoxButton.OK, MessageBoxImage.Error);
         
 
-        public void ShowInfo(string message) => MessageBox.Show(message, _caption, MessageBoxButton.OK, MessageBoxImage.Information);
+        public void ShowInfo(string message)
+            => MessageBox.Show(message, _caption, MessageBoxButton.OK, MessageBoxImage.Information);
+        public void ShowColorPickerDialog()
+        {
+        }
     }
 }

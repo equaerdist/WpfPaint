@@ -12,8 +12,9 @@ using System.Windows.Media.Imaging;
 using WpfPaint.Services.FileHandler;
 using System.Threading.Tasks;
 using WpfPaint.Infrastructure.Commands;
-using static System.Net.WebRequestMethods;
 using System.Windows;
+using WpfPaint.Infrastructure.Behaviors;
+using Microsoft.Xaml.Behaviors;
 
 namespace WpfPaint.ViewModels
 {
@@ -113,6 +114,8 @@ namespace WpfPaint.ViewModels
                 bitmap.UriSource = new Uri(fileName, UriKind.RelativeOrAbsolute);
                 bitmap.EndInit();
                 image.Source = bitmap;
+                var behavior = new ShapeEditBehavior();
+				Interaction.GetBehaviors(image).Add(behavior);
                 canvas.Children.Add(image);
             }
             catch (Exception ex)

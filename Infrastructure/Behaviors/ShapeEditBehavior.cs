@@ -15,7 +15,7 @@ using WpfPaint.Infrastructure.Extensions;
 
 namespace WpfPaint.Infrastructure.Behaviors
 {
-    class ShapeEditBehavior : Behavior<Shape>
+    class ShapeEditBehavior : Behavior<FrameworkElement>
     {
         private Point startPoint;
         private TransformGroup transformGroup = null!;
