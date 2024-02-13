@@ -43,6 +43,8 @@ namespace WpfPaint.Infrastructure.Behaviors
             AssociatedObject.RenderTransformOrigin = new Point(0.5, 0.5);
 
             AssociatedObject.RenderTransform = transformGroup;
+            if (_canvas is null)
+                _canvas = AssociatedObject.FindVisualParent<Canvas>();
         }
 
         private void OnMouseLeave(object sender, MouseEventArgs e)

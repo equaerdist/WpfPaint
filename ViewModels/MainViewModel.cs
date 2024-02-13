@@ -15,6 +15,7 @@ using WpfPaint.Infrastructure.Commands;
 using System.Windows;
 using WpfPaint.Infrastructure.Behaviors;
 using Microsoft.Xaml.Behaviors;
+using System.Windows.Media.Media3D;
 
 namespace WpfPaint.ViewModels
 {
@@ -35,13 +36,13 @@ namespace WpfPaint.ViewModels
 					{
 						Colors.RemoveAt(Colors.Count - 1);
 						Colors.Add(value);
-					}
-				}
-			}
+                    }
+                }
+            }
 		}
-		#endregion
-		#region Размер кистей
-		private int _brushSize = 10;
+        #endregion
+        #region Размер кистей
+        private int _brushSize = 10;
 		public int BrushSize
 		{
 			get { return _brushSize; }
@@ -166,7 +167,7 @@ namespace WpfPaint.ViewModels
 			Figures = new()
 			{
 				Figure.Triangle, Figure.Square,
-				Figure.Circle, Figure.Line, Figure.None
+				Figure.Circle, Figure.Line
 			};
 			Color = Colors.First();
 			Figure = Figures.First();

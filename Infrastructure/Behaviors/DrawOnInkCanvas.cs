@@ -103,7 +103,8 @@ namespace WpfPaint.Infrastructure.Behaviors
             if (_canvas is null || _storage is null)
                 throw new ArgumentNullException(nameof(_canvas));
             var diffCount = _canvas.Children.Count - _storage.Count;
-            _canvas.Children.RemoveRange(_canvas.Children.Count - diffCount, diffCount);
+            if(!(Figure == Figure.None))
+                _canvas.Children.RemoveRange(_canvas.Children.Count - diffCount, diffCount);
             DrawInfo drawInfo = new((new(0,0), new(0,0)), new Rectangle());
             if(Figure == Figure.Square)
                 drawInfo = DrawRectangle(current);
@@ -113,8 +114,16 @@ namespace WpfPaint.Infrastructure.Behaviors
                 drawInfo = DrawTriangle(current);
             if (Figure == Figure.Line)
                 drawInfo = DrawLine(current);
-            var behavior = new ShapeEditBehavior();
-            Interaction.GetBehaviors(drawInfo?.Shape).Add(behavior);
+            if(Figure == Figure.None)
+            {
+                drawInfo = DrawLine(current);
+                _start = current;
+            }
+            if (!(Figure == Figure.None))
+            {
+                var behavior = new ShapeEditBehavior();
+                Interaction.GetBehaviors(drawInfo?.Shape).Add(behavior);
+            }
         }
         private DrawInfo DrawEllipse(Point current)
         {

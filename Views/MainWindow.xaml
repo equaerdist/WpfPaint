@@ -93,8 +93,8 @@
                                 </ItemsPanelTemplate>
                             </ListView.ItemsPanel>
                         </ListView>
-                        <Grid Margin="10">
-                            <Rectangle Fill="{StaticResource main_color}" Width="25" Height="25" VerticalAlignment="Center"  HorizontalAlignment="Center">
+                        <Grid>
+                            <Rectangle Fill="{StaticResource main_color}" Width="25" Height="25">
                                 <Rectangle.InputBindings>
                                     <MouseBinding MouseAction="LeftClick" Command="{Binding PickColorCommand}"></MouseBinding>
                                 </Rectangle.InputBindings>
@@ -130,13 +130,15 @@
                 </GroupBox>
             </Grid>
             <Grid  Margin="0,10,0,10">
-                <Canvas Background="{StaticResource help_color}" x:Name="canvas">
+                <Canvas Background="{StaticResource help_color}" x:Name="canvas" VirtualizingPanel.IsVirtualizing="True">
                     <bh:Interaction.Behaviors>
                         <mybh:DrawOnInkCanvas Color="{Binding Color}" 
                                               BrushSize="{Binding BrushSize}" 
                                               IsFill="{Binding Fill}"
                                               Figure="{Binding Figure}"></mybh:DrawOnInkCanvas>
                     </bh:Interaction.Behaviors>
+                    <Image Width="{Binding RelativeSource={RelativeSource self}, Path=ActualWidth}"
+                           Height="{Binding RelativeSource={RelativeSource self}, Path=ActualHeight}"></Image>
                 </Canvas>
             </Grid>
         </DockPanel>

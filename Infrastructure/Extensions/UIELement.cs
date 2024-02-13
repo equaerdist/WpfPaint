@@ -21,7 +21,7 @@ namespace WpfPaint.Infrastructure.Extensions
                 return (T)XamlReader.Load(ms);
             }
         }
-        public static T? FindVisualParent<T>(this UIElement element) where T : DependencyObject
+        public static T? FindVisualParent<T>(this DependencyObject element) where T : DependencyObject
         {
             DependencyObject parent = VisualTreeHelper.GetParent(element);
 
@@ -31,6 +31,26 @@ namespace WpfPaint.Infrastructure.Extensions
             }
 
             return (T?)parent;
+        }
+        public static IEnumerable<T> FindChildren<T>(this DependencyObject dependencyObject) where T : DependencyObject
+        {
+            if (dependencyObject != null)
+            {
+                for (int i = 0; i < VisualTreeHelper.GetChildrenCount(dependencyObject); i++)
+                {
+                    DependencyObject child = VisualTreeHelper.GetChild(dependencyObject, i);
+
+                    if (child is T typedChild)
+                    {
+                        yield return typedChild;
+                    }
+
+                    foreach (T childOfChild in FindChildren<T>(child))
+                    {
+                        yield return childOfChild;
+                    }
+                }
+            }
         }
     }
 }

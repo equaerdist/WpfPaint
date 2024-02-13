@@ -6,7 +6,7 @@
         xmlns:commands="clr-namespace:WpfPaint.Infrastructure.Commands"
         xmlns:local="clr-namespace:WpfPaint.Views"
         mc:Ignorable="d"
-        Title="ColorPicker" Height="Auto" Width="500"
+        Title="ColorPicker" Height="280" Width="500"
         DataContext="{Binding Source={StaticResource Locator}, Path=ColorPickerViewModel}">
     <StackPanel Orientation="Vertical" Margin="10">
         <StackPanel.Resources>
