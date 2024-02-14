@@ -7,4 +7,6 @@
     </LinearGradientBrush>
     <SolidColorBrush x:Key="text_color" Color="White"></SolidColorBrush>
     <SolidColorBrush x:Key="help_color" Color="#2b2b2b"></SolidColorBrush>
+    <SolidColorBrush x:Key="fourth_color" Color="#FF3F3F3F"/>
+    <SolidColorBrush x:Key="Border" Color="#888888"/>
 </ResourceDictionary>

@@ -2,12 +2,17 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:WpfPaint"
-             StartupUri="Views/MainWindow.xaml">
+             xmlns:vm="clr-namespace:WpfPaint.ViewModels"
+             StartupUri="Views/MainWindow.xaml"
+            xmlns:conv="clr-namespace:WpfPaint.Infrastructure.Converters">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Resources/Styles/Colors.xaml"></ResourceDictionary>
+                <ResourceDictionary Source="Resources/Styles/Styles.xaml"></ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
+            <vm:ViewModelLocator x:Key="Locator"></vm:ViewModelLocator>
+            <conv:ColorToBrush x:Key="color_to_brush"></conv:ColorToBrush>
         </ResourceDictionary>
     </Application.Resources>
 </Application>
