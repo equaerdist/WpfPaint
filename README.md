@@ -8,4 +8,4 @@
 ![Главное окно](MainWindow.png)
 
 ### Палитра цветов (ColorPicker)
-![Палитра цветов](ColorPicker.png)
+![Палитра цветов](ColorPickerDialog.png)
