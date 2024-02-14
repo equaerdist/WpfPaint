@@ -9,6 +9,7 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Resources/Styles/Colors.xaml"></ResourceDictionary>
+                <ResourceDictionary Source="Resources/Styles/Styles.xaml"></ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
             <vm:ViewModelLocator x:Key="Locator"></vm:ViewModelLocator>
             <conv:ColorToBrush x:Key="color_to_brush"></conv:ColorToBrush>

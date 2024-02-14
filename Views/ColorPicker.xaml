@@ -6,7 +6,8 @@
         xmlns:commands="clr-namespace:WpfPaint.Infrastructure.Commands"
         xmlns:local="clr-namespace:WpfPaint.Views"
         mc:Ignorable="d"
-        Title="ColorPicker" Height="280" Width="500"
+        Title="ColorPicker" Height="300" Width="500"
+        Background="{StaticResource secondary_color}"
         DataContext="{Binding Source={StaticResource Locator}, Path=ColorPickerViewModel}">
     <StackPanel Orientation="Vertical" Margin="10">
         <StackPanel.Resources>
@@ -29,19 +30,32 @@
                         <RowDefinition Height="Auto"></RowDefinition>
                         <RowDefinition Height="Auto"></RowDefinition>
                     </Grid.RowDefinitions>
-                    <TextBlock Grid.Column="0" Grid.Row="0" Margin="0,10,0,0">Red</TextBlock>
+                    <TextBlock Grid.Column="0" 
+                               Grid.Row="0" 
+                               Margin="0,10,0,0"
+                               Foreground="{StaticResource text_color}">Red</TextBlock>
                     <Slider Grid.Column="1" Grid.Row="0" 
                         Margin="15,10,0,0" 
-                        Minimum="0" Maximum="255" 
+                        Minimum="0" Maximum="255"
+                        Style="{StaticResource Horizontal_Slider}"
                         Value="{Binding Red}"></Slider>
-                    <TextBlock Grid.Column="0" Grid.Row="1" Margin="0,10,0,0">Green</TextBlock>
+                    <TextBlock Grid.Column="0" 
+                               Grid.Row="1" 
+                               Margin="0,10,0,0"
+                                Foreground="{StaticResource text_color}">Green</TextBlock>
                     <Slider Grid.Column="1" Grid.Row="1" 
                         Margin="15,10,0,0" 
                         Minimum="0" 
                         Maximum="255" 
+                        Style="{StaticResource Horizontal_Slider}"
                         Value="{Binding Green}"></Slider>
-                    <TextBlock DockPanel.Dock="Left" Grid.Column="0" Grid.Row="2" Margin="0,10,0,0">Blue</TextBlock>
-                    <Slider Grid.Column="1" Grid.Row="2" 
+                    <TextBlock DockPanel.Dock="Left" 
+                               Grid.Column="0" 
+                               Grid.Row="2" Margin="0,10,0,0"
+                                Foreground="{StaticResource text_color}">Blue</TextBlock>
+                    <Slider Grid.Column="1" 
+                            Grid.Row="2" 
+                            Style="{StaticResource Horizontal_Slider}"
                         Margin="15,10,0,0"
                         Minimum="0" 
                         Maximum="255" 
@@ -51,7 +65,9 @@
             <Grid Grid.Column="1">
                 <StackPanel Orientation="Vertical" VerticalAlignment="Center" Margin="30">
                     <Rectangle Width="100" Height="100" Fill="{Binding CurrentColor, Converter={StaticResource color_to_brush}}"></Rectangle>
-                    <TextBlock HorizontalAlignment="Center" Margin="0,25,0,0">Текущий цвет</TextBlock>
+                    <TextBlock HorizontalAlignment="Center"
+                               Margin="0,25,0,0"
+                                Foreground="{StaticResource text_color}">Текущий цвет</TextBlock>
                 </StackPanel>
             </Grid>
         </Grid>

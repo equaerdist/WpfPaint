@@ -6,11 +6,15 @@
         xmlns:local="clr-namespace:WpfPaint"
         xmlns:bh="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:mybh="clr-namespace:WpfPaint.Infrastructure.Behaviors"
-        xmlns:sys="clr-namespace:System.Windows.Media;assembly=WindowsBase"
+        xmlns:commands="clr-namespace:WpfPaint.Infrastructure.Commands"
+        xmlns:vm="clr-namespace:WpfPaint.ViewModels"
         mc:Ignorable="d"
         xmlns:selectors="clr-namespace:WpfPaint.Infrastructure.TemplateSelectors.FigureSelector"
         DataContext="{Binding Source={StaticResource Locator}, Path=MainViewModel}"
         Title="MainWindow" Height="450" Width="800">
+    <bh:Interaction.Behaviors>
+        <mybh:CancelActions></mybh:CancelActions>
+    </bh:Interaction.Behaviors>
     <Grid Background="{StaticResource secondary_color}">
         <Grid.Resources>
            
@@ -57,7 +61,7 @@
                                       Triangle="{StaticResource Triangle}"></selectors:FigureSelector>
         </Grid.Resources>
         <DockPanel Margin="10">
-            <Menu DockPanel.Dock="Top">
+            <Menu DockPanel.Dock="Top" Background="Transparent">
                 <MenuItem Header="Фаил">
                     <MenuItem Header="Сохранить как" 
                               Command="{Binding SaveFileCommand}" 
@@ -73,39 +77,47 @@
                     <ColumnDefinition Width="*"></ColumnDefinition>
                     <ColumnDefinition Width="*"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
-                <GroupBox Header="Цвета" Grid.Column="0">
+                <GroupBox Header="Цвета" Grid.Column="0" Style="{StaticResource MetroGroupBox}">
                     <DockPanel>
                         <ListView ItemsSource="{Binding Colors}"
-                              SelectedItem="{Binding Color}"
+                                    SelectedItem="{Binding Color}"
                                   DockPanel.Dock="Left"
+                                  BorderThickness="0"
+                                 
+                                  Background="{StaticResource help_color}"
                               ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-                            <ItemsControl.ItemTemplate>
+                            <ListView.Resources>
+                                <DataTemplate DataType="{x:Type vm:ColorPicker}">
+                                    <Rectangle Fill="{StaticResource main_color}" Width="25" Height="25" 
+                                               Margin="5"
+                                               DataContext="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=DataContext}">
+                                        <Rectangle.InputBindings>
+                                            <MouseBinding MouseAction="LeftClick" Command="{Binding PickColorCommand}"></MouseBinding>
+                                        </Rectangle.InputBindings>
+                                    </Rectangle>
+                                </DataTemplate>
                                 <DataTemplate DataType="{x:Type Color}">
                                     <Rectangle Fill="{Binding Converter={StaticResource color_to_brush}, Mode=OneWay}"  
                                            Width="25" 
                                            Height="25" 
                                            Margin="5"></Rectangle>
                                 </DataTemplate>
-                            </ItemsControl.ItemTemplate>
+                            </ListView.Resources>
                             <ListView.ItemsPanel>
                                 <ItemsPanelTemplate>
                                     <WrapPanel></WrapPanel>
                                 </ItemsPanelTemplate>
                             </ListView.ItemsPanel>
                         </ListView>
-                        <Grid>
-                            <Rectangle Fill="{StaticResource main_color}" Width="25" Height="25">
-                                <Rectangle.InputBindings>
-                                    <MouseBinding MouseAction="LeftClick" Command="{Binding PickColorCommand}"></MouseBinding>
-                                </Rectangle.InputBindings>
-                            </Rectangle>
-                        </Grid>
-                       
                     </DockPanel>
                 </GroupBox>
-                <GroupBox Header="Фигуры" Margin="10,0,10,0" Grid.Column="1">
+                <GroupBox Header="Фигуры" Margin="10,5,10,5"
+                          Grid.Column="1"
+                          Style="{StaticResource MetroGroupBox}">
                     <ListView ItemsSource="{Binding Figures}"
                               SelectedItem="{Binding Figure}"
+                              BorderThickness="0"
+                              Background="{StaticResource help_color}"
                               ItemTemplateSelector="{StaticResource figure_selector}"
                               ScrollViewer.HorizontalScrollBarVisibility="Disabled">
                         <ListView.ItemsPanel>
@@ -115,13 +127,15 @@
                         </ListView.ItemsPanel>
                     </ListView>
                 </GroupBox>
-                <GroupBox Header="Параметры" Grid.Column="2">
-                    <DockPanel Margin="2">
+                <GroupBox Header="Параметры" Grid.Column="2"
+                          Style="{StaticResource MetroGroupBox}" Margin="5,5,5,5">
+                    <DockPanel Background="{StaticResource help_color}">
                         <ComboBox ItemsSource="{Binding BrushSizes}" 
+                                  Margin="2"
                                   SelectedItem="{Binding BrushSize}"
                                   DockPanel.Dock="Top" 
                                   Height="25"></ComboBox>
-                        <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                        <StackPanel Orientation="Horizontal" Margin="2">
                             <TextBlock Foreground="{StaticResource text_color}" VerticalAlignment="Center">Заливка</TextBlock>
                             <CheckBox IsChecked="{Binding Fill}" VerticalAlignment="Center" Margin="10,0,0,0"></CheckBox>
                         </StackPanel>
@@ -130,15 +144,15 @@
                 </GroupBox>
             </Grid>
             <Grid  Margin="0,10,0,10">
-                <Canvas Background="{StaticResource help_color}" x:Name="canvas" VirtualizingPanel.IsVirtualizing="True">
+                <Canvas Background="{StaticResource help_color}" x:Name="canvas" 
+                        VirtualizingPanel.IsVirtualizing="True"
+                        ClipToBounds="True">
                     <bh:Interaction.Behaviors>
                         <mybh:DrawOnInkCanvas Color="{Binding Color}" 
                                               BrushSize="{Binding BrushSize}" 
                                               IsFill="{Binding Fill}"
                                               Figure="{Binding Figure}"></mybh:DrawOnInkCanvas>
                     </bh:Interaction.Behaviors>
-                    <Image Width="{Binding RelativeSource={RelativeSource self}, Path=ActualWidth}"
-                           Height="{Binding RelativeSource={RelativeSource self}, Path=ActualHeight}"></Image>
                 </Canvas>
             </Grid>
         </DockPanel>

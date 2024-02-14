@@ -64,7 +64,7 @@ namespace WpfPaint.Services.UserDialogs
             => MessageBox.Show(message, _caption, MessageBoxButton.OK, MessageBoxImage.Information);
         public bool ShowColorPickerDialog(out Color selectedColor)
         {
-            var picker = new ColorPicker();
+            var picker = new Views.ColorPicker();
             if(picker.ShowDialog() == true)
             {
                 var viewModel = (ColorPickerViewModel)picker.DataContext;

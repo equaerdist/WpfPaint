@@ -19,12 +19,13 @@ using System.Windows.Media.Media3D;
 
 namespace WpfPaint.ViewModels
 {
+	public record class ColorPicker();
     class MainViewModel : BaseViewModel
     {
 		private string _openFilter = "Все поддерживаемые форматы|*.png;*.jpg;*.jpeg;*.bmp;*.gif|PNG Files (*.png)|*.png|JPEG Files (*.jpg;*.jpeg)|*.jpg;*.jpeg|Bitmap Files (*.bmp)|*.bmp|GIF Files (*.gif)|*.gif";
         #region Цвет
         private Color _color;
-		public ObservableCollection<Color> Colors { get; set; }
+		public ObservableCollection<object> Colors { get; set; }
 		public Color Color
 		{
 			get { return _color; }
@@ -34,7 +35,7 @@ namespace WpfPaint.ViewModels
 				{
 					if(!Colors.Contains(value))
 					{
-						Colors.RemoveAt(Colors.Count - 1);
+						Colors.RemoveAt(Colors.Count - 2);
 						Colors.Add(value);
                     }
                 }
@@ -157,19 +158,21 @@ namespace WpfPaint.ViewModels
 			_dialogs = dialogs;
 			_fileHandler = fileHandler;
 			BrushSizes = Enumerable.Range(2, 15);
-			Colors = new ObservableCollection<Color>() 
+			Colors = new ObservableCollection<object>() 
 			{
 				Color.FromRgb(23,35,145),
-				Color.FromRgb(56,87,23),
+                Color.FromRgb(43,43,43),
+                Color.FromRgb(56,87,23),
 				Color.FromRgb(54,32,199),
-				Color.FromRgb(97,145,225)
+				Color.FromRgb(97,145,225),
+				new ColorPicker()
 			};
 			Figures = new()
 			{
 				Figure.Triangle, Figure.Square,
 				Figure.Circle, Figure.Line
 			};
-			Color = Colors.First();
+			Color = (Color)Colors.First(t => t.GetType() == typeof(Color));
 			Figure = Figures.First();
 		}
 

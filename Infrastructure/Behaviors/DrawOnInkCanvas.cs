@@ -61,6 +61,7 @@ namespace WpfPaint.Infrastructure.Behaviors
         #endregion
         private Canvas? _canvas;
         private Point _start;
+        private Color _eraseColor = Color.FromRgb(43, 43, 43);
         private UIElementCollection? _storage;
         /// <summary>
         /// Используется, чтобы при рисовании фигура не перекрывала канвас и тем самым, 'cъедала' событие отжатия клавиши мыши
@@ -121,8 +122,11 @@ namespace WpfPaint.Infrastructure.Behaviors
             }
             if (!(Figure == Figure.None))
             {
-                var behavior = new ShapeEditBehavior();
-                Interaction.GetBehaviors(drawInfo?.Shape).Add(behavior);
+                if (!(Color == _eraseColor))
+                {
+                    var behavior = new ShapeEditBehavior();
+                    Interaction.GetBehaviors(drawInfo?.Shape).Add(behavior);
+                }
             }
         }
         private DrawInfo DrawEllipse(Point current)
